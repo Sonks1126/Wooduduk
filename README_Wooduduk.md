@@ -6,7 +6,7 @@ Unity 기반 멀티플레이 게임 프로젝트 **「우드득」**의 기술�
 
 ## GitHub
 
-- Repository: https://github.com/Sonks1126/Scripts
+- Repository: https://github.com/Sonks1126/Wooduduk
 
 ## 프로젝트 개요
 
