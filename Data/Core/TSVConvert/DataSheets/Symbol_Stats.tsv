@@ -1,0 +1,10 @@
+﻿1번 라인은 설명, 2번 라인은 헤더 ID/Name은 필수 사항 숫자 규칙 S : Symbol 1,2 : 예비(현재는 0으로 통일, 캐릭터 늘어날 확장성 대비) 3 :인덱싱 번호 정의  Symbol = SymbolType enum(SWING/PERFECT/INSTANT/WILD/BOOST/BLANK/FAIL/TRIGGER)  Weight = 출현 가중치(합계 무관, 상대 비율로 계산)  Trigger = 발동 최소 개수(0=사용 안 함)  Val1·Val2 = 종류마다 의미 다름(스윙=개당배율, 도토리=재화량, 불빠따=배율|페널티 등) Dur = 캐리오버 지속 스핀(0=즉발, 이번 스핀만)							
+ID	Name	Symbol	Weight	Trigger	Val1	Val2	Dur
+S001	스윙	SWING	32	1	1	0	0
+S002	퍼펙트	PERFECT	16	2	2	0	0
+S003	도토리	INSTANT	9	1	5	0	0
+S004	행운	WILD	7.7	0	0	0	0
+S005	불빠따	BOOST	5	1	1.5	0.2	1
+S006	옹이	BLANK	21	0	0	0	0
+S007	좀벌레	FAIL	4	2	0	0	0
+S008	막걸리	TRIGGER	13	3	0	0	0

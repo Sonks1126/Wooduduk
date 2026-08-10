@@ -1,0 +1,8 @@
+﻿1번 라인은 설명, 2번 라인은 헤더 ID/Name은 필수 사항 특성 신원 + 성장 정보 숫자 규칙 W : Weapon 1,2 : 예비(현재는 0으로 통일) 3 :인덱싱 번호 Rarity = COMMON / RARE / EPIC / LEGENDARY Icon = 아이콘 에셋 ID / Prefab = 3D 프리팹 에셋 ID / VfxSet = 시각효과 세트 ID (없으면 none)							
+ID	Name	Rarity	Token	ReturnGold	Description	VfxSet	Weight
+W001	기본도끼	COMMON	10	0	기본 지급 도끼	none	0
+W002	참치X	LEGENDARY	10	500	물고기 형태 도끼	vfx_gold	1
+W003	원시도끼	EPIC	10	500	원시돌 도끼		2
+W004	픽셀 나무 도끼	EPIC	10	500	픽셀 나무 도끼		2
+W005	불빠따	RARE	10	500	이글거리는 불방망이		3
+W006	조잡한 도끼	RARE	10	500	박스로 만든 도끼		3

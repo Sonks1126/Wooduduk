@@ -1,0 +1,12 @@
+﻿1번 라인은 설명, 2번 라인은 헤더 ID/Name은 필수 사항 숫자 규칙 M : Makgeolli 1,2 : 예비(현재는 0으로 통일) 3 :인덱싱 번호 막걸리 3매치 랜덤 효과  Type= BUFF(이득)|DEBUFF(불이익)  Dur=지속 스핀 수  opcode : ( weight_multiply = 가중치 곱(Val1=퍼센트, 100=기준) ), ( wood_mult = 장작 배율(Val1=배율, 1.5=×1.5) ), ( combo_on_hit = 명중시콤보+ 미구현 ), ( wood_zero = 장작0 미구현 ) Effects 포맷 : EffectType | Target | TargetSymbol | Val1|Val2 | Dur / TargetSymbol 없으면 빈칸( || ) 				
+Effects	Name	Type	Dur	Effects
+M001	불타는도끼	BUFF	5	weight_multiply|Self|SWING|115|0|5
+M002	황금손	BUFF	5	acorn_mult|Self||2|0|5
+M003	장인의집중	BUFF	3	weight_multiply|Self|PERFECT|125|0|3
+M004	흥폭발	BUFF	1	combo_on_hit|Self||2|0|1
+M005	행운목바람	BUFF	5	weight_multiply|Self|LUCK|200|0|5
+M006	딸꾹질	DEBUFF	3	weight_multiply|Self|WORM|110|0|3
+M007	풀린눈	DEBUFF	3	weight_multiply|Self|PERFECT|80|0|3
+M008	무거운도끼	DEBUFF	1	force_weak|Self||0|0|1
+M009	헛손질	DEBUFF	1	wood_zero|Self||0|0|1
+M010	배탈	DEBUFF	2	acorn_mult|Self||0|0|2

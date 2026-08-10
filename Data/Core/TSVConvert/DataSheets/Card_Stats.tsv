@@ -1,0 +1,10 @@
+﻿1번 라인은 설명, 2번 라인은 헤더  ID/Name은 필수 사항  숫자 규칙  C : Card 1,2 : 예비(현재는 0으로 통일)  3 :인덱싱 번호 opcode : ( weight_multiply = 가중치 곱(Val1=퍼센트, 100=기준, 110=+10%, 92=-8%) ), ( fail_guard = 실패방어(Val1=보호횟수) ), ( acorn_mult = 도토리 가치 배수(Val1=배율) ), ( extra_reel = 릴+1 ), ( value_mod = 수치 변경 미구현 ) Effects 포맷 : EffectType | Target | TargetSymbol | Val1 | Val2 | Dur(-1=영구적용) / 여러 효과는 콤마(,)로 구분 / TargetSymbol 없으면 빈칸(||) / 추가						
+ID	Name	Cost	Rarity	Description	Count	Effects
+C001	알루미늄 배트	5	COMMON	스윙 출현율 30% 증가	0	weight_multiply|Self|SWING|130|0|-1
+C002	행운 묘목	200	RARE	행운 출현율 8% 증가	0	weight_multiply|Self|LUCK|108|0|-1
+C003	보험 증서	250	RARE	실패 1회 시 콤보·미정산 보존	0	fail_guard|Self||1|0|-1
+C004	기름통	350	EPIC	불빠따 배율·페널티 증가	0	firebat_boost|Self|FIREBAT|150|10|-1
+C005	도토리 자루	150	COMMON	도토리 가치 2배	0	acorn_mult|Self||2|0|-1
+C006	4번째 릴	500	LEGENDARY	슬롯 칸 +1 (풀스윙 기준 6개)	0	extra_reel|Self||1|0|-1
+C007	막걸리 항아리	400	EPIC	막걸리 출현율 8% 증가	0	weight_multiply|Self|MAKGEOLLI|108|0|-1
+C008	살충제	100	COMMON	좀벌레 출현율 50% 감소	0	weight_multiply|Self|WORM|50|0|-1
