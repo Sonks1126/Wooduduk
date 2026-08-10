@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우드득 — 데이터 &amp; 네트워크 기술문서</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    font-size: 14px; line-height: 1.7; color: #1a1a1a; background: #0f0f1a;
+  }
+  .page { max-width: 960px; margin: 32px auto; background: #fff; border-radius: 8px;
+          box-shadow: 0 4px 32px rgba(0,0,0,.4); overflow: hidden; }
+
+  /* 표지 */
+  .cover {
+    background: linear-gradient(135deg, #1a3a6b 0%, #e67e22 100%);
+    color: #fff; padding: 80px 60px 60px; position: relative; overflow: hidden;
+  }
+  .cover::before {
+    content: "◯"; position: absolute; right: 60px; top: 30px;
+    font-size: 200px; opacity: .05; color: #e67e22; line-height: 1;
+  }
+  .cover::after {
+    content: "◉"; position: absolute; right: 140px; top: 110px;
+    font-size: 110px; opacity: .08; color: #1a3a6b; line-height: 1;
+  }
+  .cover .sub { font-size: 13px; letter-spacing: 3px; opacity: .7; margin-bottom: 16px; }
+  .cover h1 { font-size: 48px; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+  .cover h2 { font-size: 26px; font-weight: 500; opacity: .85; margin-bottom: 40px; }
+  .cover .meta { font-size: 13px; opacity: .7; border-top: 1px solid rgba(255,255,255,.3); padding-top: 20px; margin-top: 20px; }
+
+  /* 본문 */
+  .content { padding: 48px 56px; }
+  h2.sec { font-size: 22px; font-weight: 700; color: #1a3a6b; border-left: 5px solid #e67e22;
+           padding: 6px 0 6px 16px; margin: 48px 0 20px; }
+  h2.sec.firebase { border-color: #f5a623; color: #c05000; }
+  h2.sec.tier { border-color: #8b45b5; color: #5a1d7a; }
+  h2.sec.debug { border-color: #27ae60; color: #1a5c3a; }
+  h3.subsec { font-size: 16px; font-weight: 700; color: #2e5e8e; margin: 28px 0 12px; }
+  h3.subsec.firebase { color: #c05000; }
+  h3.subsec.tier { color: #8b45b5; }
+  h3.subsec.debug { color: #27ae60; }
+  p { margin-bottom: 12px; color: #333; }
+  code { background: #f0f0f0; border-radius: 3px; padding: 1px 5px; font-family: 'Consolas', monospace; font-size: 12.5px; color: #c0392b; }
+
+  /* 표 */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th { background: #1a3a6b; color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; }
+  th.fb { background: #c05000; }
+  th.tier { background: #5a1d7a; }
+  th.debug { background: #1a5c3a; }
+  th.legacy { background: #555; }
+  td { padding: 8px 12px; border: 1px solid #dde3ec; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f9fc; }
+  tr:hover td { background: #eef3fc; }
+  td.label { font-weight: 600; color: #2e5e8e; white-space: nowrap; background: #f0f5ff !important; min-width: 160px; }
+  td.label.fb { color: #c05000; background: #fff8f0 !important; }
+  td.label.tier { color: #8b45b5; background: #f8f0ff !important; }
+  td.label.debug { color: #27ae60; background: #f0fff5 !important; }
+  td.label.legacy { color: #555; background: #f5f5f5 !important; }
+
+  /* 코드 블록 */
+  pre {
+    background: #1e1e2e; color: #cdd6f4; border-radius: 6px;
+    padding: 16px 20px; font-size: 12.5px; font-family: 'Consolas', 'D2Coding', monospace;
+    overflow-x: auto; margin: 12px 0 20px; line-height: 1.6;
+    border-left: 3px solid #e67e22;
+  }
+  pre.firebase { border-left-color: #c05000; }
+  pre.debug { border-left-color: #27ae60; }
+  pre .comment { color: #6a9955; }
+  pre .key { color: #9cdcfe; }
+  pre .val { color: #ce9178; }
+  pre .kw { color: #569cd6; }
+
+  /* 불릿 */
+  ul.doc-list { list-style: none; margin: 8px 0 16px 0; }
+  ul.doc-list li { padding: 5px 0 5px 24px; position: relative; color: #333; border-bottom: 1px solid #f0f0f0; }
+  ul.doc-list li:last-child { border-bottom: none; }
+  ul.doc-list li::before { content: "▸"; position: absolute; left: 4px; color: #e67e22; font-size: 13px; top: 6px; }
+  ul.doc-list.fb li::before { color: #c05000; }
+  ul.doc-list.tier li::before { color: #8b45b5; }
+  ul.doc-list.debug li::before { color: #27ae60; }
+
+  /* 정보 박스 */
+  .info-box { border-left: 4px solid #e67e22; background: #fff8f0; border-radius: 0 6px 6px 0; padding: 14px 18px; margin: 14px 0 22px; font-size: 13.5px; color: #1a3a4a; }
+  .info-box strong { display: block; margin-bottom: 6px; font-size: 14px; }
+  .info-box.warn { border-color: #e74c3c; background: #fff0f0; }
+  .info-box.fb { border-color: #c05000; background: #fff8f0; }
+  .info-box.tier { border-color: #8b45b5; background: #f8f0ff; }
+  .info-box.debug { border-color: #27ae60; background: #f0fff5; }
+  .info-box.legacy { border-color: #999; background: #f5f5f5; color: #555; }
+  .info-box.good { border-color: #27ae60; background: #f0fff5; }
+
+  /* 구분선 */
+  hr { border: none; border-top: 2px solid #dde3ec; margin: 48px 0; }
+
+  /* 목차 */
+  .toc { background: #f7f9fc; border: 1px solid #dde3ec; border-radius: 6px; padding: 24px 32px; margin-bottom: 40px; }
+  .toc h3 { font-size: 15px; margin-bottom: 16px; color: #1a3a6b; }
+  .toc ol { margin-left: 20px; }
+  .toc li { margin: 6px 0; }
+  .toc a { color: #2e5e8e; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* 파일 그룹 */
+  .file-group { margin-bottom: 24px; }
+  .file-group-title { padding: 8px 16px; border-radius: 4px; font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 6px; }
+  .fg-blue { background: #2e5e8e; }
+  .fg-fb { background: #c05000; }
+  .fg-tier { background: #8b45b5; }
+  .fg-debug { background: #1a5c3a; }
+  .fg-grey { background: #555; }
+
+  /* 배지 */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; color: #fff; margin-right: 4px; }
+  .badge-disabled { background: #888; }
+  .badge-active { background: #27ae60; }
+  .badge-warn { background: #e74c3c; }
+
+
+  /* GitHub 코드 보기 */
+  .github-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 28px; padding: 11px 20px;
+    border: 1px solid rgba(255,255,255,.45); border-radius: 7px;
+    color: #fff; text-decoration: none; font-weight: 700; font-size: 13px;
+    background: rgba(0,0,0,.22);
+  }
+  .github-link:hover { background: rgba(0,0,0,.35); }
+  .github-url { font-size: 11px; opacity: .65; margin-top: 8px; word-break: break-all; }
+
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; max-width: 100%; }
+    .content { padding: 32px 40px; }
+    h2.sec { page-break-before: always; }
+    h2.sec:first-of-type { page-break-before: avoid; }
+  }
+</style>
+
+<style id="pdf-print-fixes">
+@media print {
+  @page { size: A4; margin: 10mm; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  .github-link { text-decoration: none !important; }
+  .card, .section, table, tr, .grid, .flow, .hero, .box { break-inside: avoid; page-break-inside: avoid; }
+  a { color: inherit; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- 표지 -->
+<div class="cover">
+  <div class="sub">WOODUDUK (우드득)</div>
+  <h1>데이터 &amp; 네트워크</h1>
+  <h2>시스템 기술문서</h2>
+  <div class="meta">
+    Firebase RTDB · 매칭 · 실시간 동기화 · 사망/랭크 정산 · 데이터 관리 · 디버그 툴
+  </div>
+  <a class="github-link" href="https://github.com/Sonks1126/Wooduduk" target="_blank" rel="noopener noreferrer">💻 GitHub에서 실제 구현 코드 보기</a>
+  <div class="github-url">github.com/Sonks1126/Wooduduk</div>
+</div>
+
+<!-- 목차 -->
+<div class="content">
+<div class="toc">
+  <h3>목차</h3>
+  <ol>
+    <li><a href="#s1">1. 시스템 개요</a></li>
+    <li><a href="#s2">2. 네트워크 변천사</a></li>
+    <li><a href="#s3">3. 현재 구조 — Firebase RTDB</a>
+      <ol>
+        <li><a href="#s3-1">3-1. DB 스키마</a></li>
+        <li><a href="#s3-2">3-2. stateAndTier 복합키</a></li>
+        <li><a href="#s3-3">3-3. Security Rules</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">4. 핵심 클래스</a>
+      <ol>
+        <li><a href="#s4-1">4-1. RoomRepository</a></li>
+        <li><a href="#s4-2">4-2. FirebaseRoomMatchSource</a></li>
+        <li><a href="#s4-3">4-3. MatchmakingFlow</a></li>
+        <li><a href="#s4-4">4-4. RoomLiveSync</a></li>
+        <li><a href="#s4-5">4-5. GameController (사망/랭크 정산)</a></li>
+      </ol>
+    </li>
+    <li><a href="#s5">5. 이벤트 파이프라인</a></li>
+    <li><a href="#s6">6. 타팀 연동 API</a></li>
+    <li><a href="#s7">7. 디버그 툴 가이드</a></li>
+  </ol>
+</div>
+
+<!-- 1. 시스템 개요 -->
+<h2 class="sec" id="s1">1. 시스템 개요</h2>
+<table>
+  <tr><th>영역</th><th>담당 시스템</th><th>핵심 기술</th></tr>
+  <tr><td class="label">매칭</td><td>FirebaseRoomMatchSource → MatchmakingFlow</td><td>Firebase RTDB, stateAndTier 복합키 쿼리, 원자적 방 생성</td></tr>
+  <tr><td class="label">실시간 동기화</td><td>RoomLiveSync</td><td>0.33s 폴링, Firebase ValueChanged, live/{uid} 노드</td></tr>
+  <tr><td class="label">사망/랭크 정산</td><td>GameController.HandleDeath()</td><td>ServerValue.Timestamp, _ranksWritten 멱등 가드</td></tr>
+  <tr><td class="label">UI 연결</td><td>RunResultUIService</td><td>static Action 이벤트 허브</td></tr>
+  <tr><td class="label">디버그</td><td>SaveManagerDebugWindow</td><td>Unity Editor 전용, partial class 12개</td></tr>
+</table>
+<div class="info-box">
+  <strong>멀티플레이어 방식 변경 이력:</strong> 초기에는 FishNet + EdgeGap 기반 서버 구조를 설계했으나,
+  2026-06-22 슬롯 피벗으로 게임 방향이 변경되면서 전면 비활성화. 현재는 Firebase RTDB만 사용.
+  별도 게임 서버 없이 매칭·동기화·정산 전체를 Firebase RTDB만으로 구현했다.
+</div>
+
+<hr>
+
+<!-- 2. 네트워크 변천사 -->
+<h2 class="sec" id="s2">2. 네트워크 변천사</h2>
+<table>
+  <tr><th class="legacy">시기</th><th class="legacy">구조</th><th class="legacy">현황</th></tr>
+  <tr>
+    <td class="label legacy">초기 설계</td>
+    <td>FishNet (Transport 레이어) + EdgeGap (게임 서버 호스팅)<br>ServerBootstrap, ClientBootstrap, NetworkPlayer, NetworkAI</td>
+    <td><span class="badge badge-disabled">비활성</span> SlotNetworkPlayer.cs: <code>#if false</code> PIVOT-DISABLED 2026-06-22<br>NetworkPlayer.cs, NetworkAI.cs: 전체 주석 처리</td>
+  </tr>
+  <tr>
+    <td class="label legacy">현재 (2026-07)</td>
+    <td>Firebase RTDB 단독<br>RoomRepository, RoomLiveSync, GameController</td>
+    <td><span class="badge badge-active">운영 중</span> 매칭·동기화·정산 모두 Firebase</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- 3. Firebase RTDB -->
+<h2 class="sec firebase" id="s3">3. 현재 구조 — Firebase RTDB</h2>
+
+<h3 class="subsec firebase" id="s3-1">3-1. DB 스키마</h3>
+<pre>rooms/
+  {roomId}/
+    state          : "waiting" | "starting" | "playing" | "finished"
+    stateAndTier   : "waiting_3"      <span class="comment">// 복합키 (단일 필드 쿼리 우회)</span>
+    hostUid        : string           <span class="comment">// 방 생성자 UID</span>
+    startAt        : long             <span class="comment">// 서버 절대시각 (카운트다운 동시 시작용)</span>
+    players/
+      {uid}/
+        uid        : string
+        nick       : string
+        tier       : int
+        ready      : bool
+        isGhost    : bool             <span class="comment">// AI 고스트 플레이어 여부</span>
+    live/
+      {uid}/
+        score      : int              <span class="comment">// 현재 점수</span>
+        combo      : int
+        temperature: float            <span class="comment">// 체온 (0이면 사망)</span>
+        alive      : bool
+        spinIndex  : int
+        fireLit    : bool             <span class="comment">// 모닥불 연소 여부</span>
+    deaths/
+      {uid}/
+        score      : long             <span class="comment">// 사망 시점 점수</span>
+        time       : ServerValue.Timestamp
+    ranks/
+      {uid}        : int              <span class="comment">// 최종 순위 (1위 = 마지막 생존자)</span>
+
+activeRooms/
+  {uid}            : string          <span class="comment">// roomId — OnDisconnect 정리 추적용 (루트 레벨)</span></pre>
+
+<h3 class="subsec firebase" id="s3-2">3-2. stateAndTier 복합키</h3>
+<p>Firebase RTDB는 단일 필드 쿼리만 지원. <code>state == "waiting" &amp;&amp; tier == 3</code> 같은 AND 쿼리 불가.</p>
+<div class="info-box fb">
+  <strong>해결책:</strong> <code>stateAndTier = $"{state}_{tier}"</code> 형태의 복합 문자열 필드를 유지.
+  매칭 시 <code>FindWaitingRoomByTier(tier)</code>가 이 필드를 <code>.OrderByChild("stateAndTier").EqualTo("waiting_3")</code>로 쿼리.
+  상태 변경 시 <code>state</code>와 <code>stateAndTier</code> 두 필드를 <code>UpdateChildrenAsync</code> 한 번에 동시 기록.
+</div>
+
+<h3 class="subsec firebase" id="s3-3">3-3. Security Rules / Index</h3>
+<pre><span class="comment">// firebase-database-rules.json</span>
+{
+  "rules": {
+    "rooms": {
+      ".indexOn": ["stateAndTier"],   <span class="comment">// 복합키 쿼리 성능을 위한 인덱스</span>
+      "$roomId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}</pre>
+
+<hr>
+
+<!-- 4. 핵심 클래스 -->
+<h2 class="sec firebase" id="s4">4. 핵심 클래스</h2>
+
+<h3 class="subsec firebase" id="s4-1">4-1. RoomRepository</h3>
+<p>Firebase RTDB I/O 전담 레이어. 모든 읽기·쓰기는 이 클래스를 통한다.</p>
+<table>
+  <tr><th class="fb">메서드</th><th class="fb">설명</th></tr>
+  <tr><td class="label fb">CreateRoomWithPlayer(roomId, roomData, playerData)</td><td>방 정보 + 내 플레이어 데이터 + activeRooms 5개 노드를 루트 레벨 UpdateChildrenAsync 한 번에 원자적 기록. 빈 방이 잠깐 노출되는 타이밍 제거.</td></tr>
+  <tr><td class="label fb">FindWaitingRoomByTier(tier)</td><td>stateAndTier == "waiting_{tier}" 쿼리. 정확히 내 티어 → 티어-1 → 티어+1 순서로 3단계 탐색.</td></tr>
+  <tr><td class="label fb">SetRoomState(roomId, state, tier)</td><td>state + stateAndTier 동시 업데이트 (단일 소스 유지)</td></tr>
+  <tr><td class="label fb">UpdateLive(roomId, uid, liveData)</td><td>rooms/{roomId}/live/{uid} 경로에 RoomLiveData 기록. 빈번 호출로 에러 콜백 생략.</td></tr>
+  <tr><td class="label fb">SubscribeLive(roomId, callback)</td><td>live/ 노드 전체 ValueChanged 구독. 모든 플레이어 실시간 데이터 수신.</td></tr>
+  <tr><td class="label fb">WriteDeath(roomId, uid, score)</td><td>deaths/{uid}에 score + ServerValue.Timestamp 기록</td></tr>
+  <tr><td class="label fb">SubscribeDeaths(roomId, callback)</td><td>deaths/ 구독. 변경 시 콜백으로 DataSnapshot 전달</td></tr>
+  <tr><td class="label fb">WriteRanks(roomId, ranks)</td><td>ranks/{uid} 일괄 UpdateChildrenAsync</td></tr>
+  <tr><td class="label fb">SubscribeRank(roomId, uid, callback)</td><td>ranks/{uid} 구독. UI 업데이트용</td></tr>
+  <tr><td class="label fb">CleanupMyPreviousRoom(uid)</td><td>비정상 종료 잔존 방 정리. 1차: activeRooms/{uid} 기록으로 삭제. 2차(폴백): rooms/ 전체 스캔해 내 uid가 포함된 방 삭제.</td></tr>
+</table>
+
+<h3 class="subsec firebase" id="s4-2">4-2. FirebaseRoomMatchSource</h3>
+<p>매칭 로직 전담. Phase 열거형(Idle → Searching → Waiting → Matched)으로 상태 관리.</p>
+<table>
+  <tr><th class="fb">멤버</th><th class="fb">설명</th></tr>
+  <tr><td class="label fb">BeginMatch()</td><td>이전 잔존 방 정리(CleanupMyPreviousRoom) 후 FindWaitingRoomByTier 시작. 고스트 후보 로드 병렬 실행.</td></tr>
+  <tr><td class="label fb">CreateNewRoom()</td><td>CreateRoomWithPlayer로 방+플레이어 원자적 생성 후 EnterRoomAsHost.</td></tr>
+  <tr><td class="label fb">JoinExistingRoom(roomId, hostUid)</td><td>기존 방 참가. session.Initialize(roomId, "waiting", <strong>_myUid</strong>)로 내 UID 설정 후 JoinRoom + 구독.</td></tr>
+  <tr><td class="label fb">IsHost (RoomSession)</td><td>실제 플레이어(isGhost=false) 중 사전순 최소 uid를 호스트로 선출. 고스트를 제외해 고스트가 호스트가 되는 버그 방지.</td></tr>
+  <tr><td class="label fb">FillWithGhosts()</td><td>GhostFillTimeout 경과 + IsHost 조건 충족 시 빈자리를 고스트로 채움. 호스트만 실행해 중복 방지.</td></tr>
+  <tr><td class="label fb">Seed (RoomSession)</td><td>roomId를 SHA256 해시 후 long 변환. 모든 클라이언트가 서버 교신 없이 동일 Seed 계산 → 결정론적 랜덤 시퀀스 공유.</td></tr>
+</table>
+<div class="info-box good">
+  <strong>버그 발견 및 수정 사례 —</strong>
+  초기 구현에서 <code>JoinExistingRoom</code>이 <code>session.Initialize(roomId, "waiting", hostUid)</code>를 호출해
+  비호스트의 <code>session.MyUid</code>가 호스트 UID로 설정되는 버그가 있었다.
+  이로 인해 비호스트가 <code>live/{hostUid}</code>에 데이터를 써서 Firebase에 호스트 항목만 보이는 증상이 발생했다.
+  Firebase Console에서 <code>live</code> 노드의 UID 항목이 1개뿐인 것을 발견하고 코드를 역추적해 원인을 확인.
+  <code>hostUid</code> → <code>_myUid</code> 한 줄 수정으로 해결.
+</div>
+
+<h3 class="subsec firebase" id="s4-3">4-3. MatchmakingFlow</h3>
+<p>매칭 완료 후 카운트다운 → 씬 로딩 → 게임 시작 시퀀스를 담당.</p>
+<pre><span class="comment">// 핵심 흐름</span>
+FindWaitingRoom()
+  → 방 없으면 CreateNewRoom() (원자적 생성)
+  → 방 있으면 JoinExistingRoom()
+  → 인원 충족 → SetRoomState("starting") → SetRoomState("playing")
+  → 전 클라이언트 state 구독 수신 → 카운트다운 종료 → run.Started = true</pre>
+
+<h3 class="subsec firebase" id="s4-4">4-4. RoomLiveSync</h3>
+<p>플레이어 상태를 0.33초 간격으로 Firebase에 기록·구독. 상대방 UI를 실시간 갱신하는 핵심 컴포넌트.</p>
+<table>
+  <tr><th class="fb">기능</th><th class="fb">설명</th></tr>
+  <tr><td class="label fb">SendMyLiveData()</td><td>0.33s마다 <code>rooms/{roomId}/live/{myUid}</code>에 score·combo·temperature·alive·spinIndex·fireLit 전송. SlotMachine.Run에서 직접 읽어 최신값 보장.</td></tr>
+  <tr><td class="label fb">SubscribeLive()</td><td><code>live/</code> 노드 ValueChanged 구독. 수신 데이터를 <code>_liveCache[uid]</code>에 저장 → 상대방 패널 UI가 캐시를 읽어 렌더링.</td></tr>
+  <tr><td class="label fb">SimulateGhosts()</td><td>고스트(AI) 플레이어를 로컬에서 시뮬레이션. 체온 드레인·점수 증가를 매 틱 계산. 체온 0 도달 시 WriteDeath 기록. 호스트만 실행해 중복 방지.</td></tr>
+  <tr><td class="label fb">GetPlayerLiveData(uid)</td><td>내 데이터는 SlotMachine에서 직접 읽어 최신값 반환. 상대/고스트는 _liveCache에서 반환.</td></tr>
+</table>
+
+<h3 class="subsec firebase" id="s4-5">4-5. GameController — 사망/랭크 정산</h3>
+<p>사망 이벤트 수신 → Firebase 기록 → 생존자 1명 남으면 순위 산정 → WriteRanks.</p>
+<pre><span class="comment">// HandleMultiplayerDeath: 내 사망을 Firebase에 기록</span>
+ctx.Repository?.WriteDeath(roomId, myUid, myScore);
+
+<span class="comment">// OnDeathsUpdated: deaths/ 변경될 때마다 호출</span>
+<span class="kw">private void</span> OnDeathsUpdated(DataSnapshot snapshot, ...)
+{
+    <span class="kw">if</span> (!snapshot.Exists) <span class="kw">return</span>;
+
+    <span class="comment">// 종료 조건: 전체 인원 - 1명 사망 = 생존자 1명 남음</span>
+    <span class="kw">if</span> ((int)snapshot.ChildrenCount &lt; totalPlayers - 1) <span class="kw">return</span>;
+
+    <span class="comment">// _ranksWritten 가드로 중복 기록 방지 (어느 클라이언트든 먼저 도달하면 기록)</span>
+    <span class="kw">if</span> (_ranksWritten) <span class="kw">return</span>;
+    _ranksWritten = <span class="kw">true</span>;
+
+    <span class="comment">// time 기준 오름차순 정렬 → 먼저 죽은 순서 = 낮은 순위</span>
+    deaths.Sort((a, b) => a.time.CompareTo(b.time));
+
+    <span class="comment">// 사망자: N, N-1, ... 2위. 생존자: 1위</span>
+    ctx.Repository?.WriteRanks(roomId, ranks);
+}</pre>
+<div class="info-box fb">
+  <strong>설계 포인트:</strong>
+  <ul class="doc-list fb" style="margin-top:8px">
+    <li>호스트 제한 없음: 어느 클라이언트든 deaths가 totalPlayers-1에 도달하면 ranks 기록. <code>_ranksWritten</code> 멱등 가드로 중복 방지.</li>
+    <li>ServerValue.Timestamp 기준 정렬: 가장 늦게 죽은 사람이 1위 (= 최장 생존자)</li>
+    <li>60초 타임아웃: 등수 미수신 시 임시 등수로 강제 확정. 영구 미저장 방지.</li>
+    <li>2단계 결과 처리: 사망 직후 임시 등수로 UI 먼저 표시 → 확정 등수 수신 후 골드·DB 저장.</li>
+    <li>이탈 감지: StartLifecycleWatch에서 SubscribePlayers로 로스터 감시. 이탈한 플레이어의 death를 호스트가 대필(멱등).</li>
+  </ul>
+</div>
+
+<hr>
+
+<!-- 5. 이벤트 파이프라인 -->
+<h2 class="sec" id="s5">5. 이벤트 파이프라인 전체</h2>
+<table>
+  <tr><th>이벤트</th><th>발신 위치</th><th>수신 위치</th><th>용도</th></tr>
+  <tr><td class="label">AccountEvents.OnLoginSucceeded</td><td>FirebaseManager</td><td>SaveManager.LoadUserData()</td><td>로그인 완료 → 유저 데이터 로드</td></tr>
+  <tr><td class="label">AccountEvents.OnUserDataLoaded</td><td>SaveManager</td><td>UserManager, TitleRouter</td><td>데이터 로드 완료 → 씬 분기</td></tr>
+  <tr><td class="label">RunResultUIService.OnRankUpdated</td><td>GameController (ranks/ 구독 수신 시)</td><td>ResultController.UpdateDisplayedRank()</td><td>인게임 실시간 순위 표시</td></tr>
+  <tr><td class="label">RunResultUIService.OnResultShown</td><td>RunEndService.EndRun()</td><td>ResultController, 디버그 툴</td><td>런 종료 결과 UI 갱신</td></tr>
+  <tr><td class="label">Firebase ValueChanged (live/)</td><td>Firebase RTDB</td><td>RoomLiveSync.OnLiveReceived()</td><td>상대방 실시간 상태 수신</td></tr>
+  <tr><td class="label">Firebase ValueChanged (deaths/)</td><td>Firebase RTDB</td><td>GameController.OnDeathsUpdated()</td><td>전원 사망 감지 → 순위 정산</td></tr>
+  <tr><td class="label">Firebase ValueChanged (ranks/)</td><td>Firebase RTDB</td><td>RunResultUIService.UpdateRank()</td><td>최종 순위 수신 → UI</td></tr>
+</table>
+
+<hr>
+
+<!-- 6. 타팀 연동 API -->
+<h2 class="sec" id="s6">6. 타팀 연동 API</h2>
+<p>다른 파트(UI, 게임플레이)에서 네트워크 레이어와 소통할 때 사용하는 진입점.</p>
+<table>
+  <tr><th>진입점</th><th>위치</th><th>사용 방법</th></tr>
+  <tr><td class="label">RunResultUIService.OnRankUpdated</td><td>Scripts/Data/Service/RunResultUIService.cs</td><td><code>RunResultUIService.OnRankUpdated += myHandler</code> — 순위 업데이트 구독</td></tr>
+  <tr><td class="label">RunResultUIService.OnResultShown</td><td>동일</td><td><code>RunResultUIService.OnResultShown += myHandler</code> — 최종 결과 수신</td></tr>
+  <tr><td class="label">RunEndService.EndRun()</td><td>Scripts/Data/Service/RunEndService.cs</td><td>런 종료 시 호출. RunProgress, SlotScoreCalculator, RunMode, UserData 전달</td></tr>
+  <tr><td class="label">RoomLiveSync.LiveCache</td><td>Scripts/Network/RoomLiveSync.cs</td><td><code>IReadOnlyDictionary&lt;string, RoomLiveData&gt;</code> — uid별 실시간 데이터 읽기</td></tr>
+  <tr><td class="label">MatchmakingFlow (이벤트 리스닝)</td><td>Scripts/Network/Firebase/Matchmaking/</td><td>매칭 상태 변경은 이 클래스가 중앙 처리. 외부에서 직접 Repository 호출 불필요</td></tr>
+</table>
+
+<hr>
+
+<!-- 7. 디버그 툴 -->
+<h2 class="sec debug" id="s7">7. 디버그 툴 가이드</h2>
+<p><code>Tools → 우드득 디버그 툴</code> 메뉴로 열기. <strong>Play Mode에서만 동작.</strong> partial class 12개 파일로 구성.</p>
+
+<h3 class="subsec debug">7-1. 탭 구성</h3>
+<table>
+  <tr><th class="debug">탭</th><th class="debug">기능</th><th class="debug">비고</th></tr>
+  <tr><td class="label debug">💾 저장 (Firebase)</td><td>UserData 저장·로드, 골드/토큰/HP 조작</td><td>항상 표시</td></tr>
+  <tr><td class="label debug">🎮 런종료 (RunEnd)</td><td>싱글/멀티 런 종료 파이프라인 수동 실행, 결과 확인</td><td>항상 표시</td></tr>
+  <tr><td class="label debug">🛒 상점 (Shop)</td><td>가챠·구매 테스트</td><td>항상 표시</td></tr>
+  <tr><td class="label debug">🏆 리더보드</td><td>Firebase 리더보드 읽기·쓰기 테스트</td><td>항상 표시</td></tr>
+  <tr><td class="label debug">🎯 매칭 (Matchmaking)</td><td>방 생성·참가·상태 확인, 라이브 상태 테이블</td><td>항상 표시</td></tr>
+  <tr><td class="label debug">📡 DB (FirebaseExplorer)</td><td>Firebase 실시간 DB 트리 탐색 · LIVE 모드 · 노드 삭제</td><td>항상 표시</td></tr>
+  <tr><td class="label debug">📊 밸런스 뷰어</td><td>점수·LP 밸런스 시뮬레이션</td><td><strong>비밀 탭</strong> — 해금 필요</td></tr>
+  <tr><td class="label debug">🌡️ 생존 시뮬레이터</td><td>생존 시간별 보상 시뮬레이션</td><td><strong>비밀 탭</strong> — 해금 필요</td></tr>
+  <tr><td class="label debug">📈 고스트 주식</td><td>고스트 주가 시뮬레이션</td><td><strong>비밀 탭</strong> — 해금 필요</td></tr>
+  <tr><td class="label debug">👻 고스트 서바이벌</td><td>고스트 생존 테스트</td><td><strong>비밀 탭</strong> — 해금 필요</td></tr>
+  <tr><td class="label debug">🏇 고스트 경마</td><td>고스트 경마 시뮬레이션</td><td><strong>비밀 탭</strong> — 해금 필요</td></tr>
+</table>
+
+<h3 class="subsec debug">7-2. 비밀 탭 해금 방법</h3>
+<div class="info-box debug">
+  <strong>코나미 코드:</strong> 디버그 창 포커스 상태에서 <code>↑ ↑ ↓ ↓ ← → ← →</code> 입력<br>
+  → 모든 비밀 탭 즉시 해금 + EditorPrefs에 영구 저장<br><br>
+  해금 후에는 <strong>창 우클릭 메뉴</strong>에서 탭별 ON/OFF 가능.
+</div>
+
+<h3 class="subsec debug">7-3. Firebase 탐색기 (FirebaseExplorer)</h3>
+<table>
+  <tr><th class="debug">기능</th><th class="debug">설명</th></tr>
+  <tr><td class="label debug">경로 조회</td><td>경로 직접 입력 또는 퀵 버튼(rooms, users, ghosts, leaderboard, 내 데이터)으로 노드 조회</td></tr>
+  <tr><td class="label debug">트리 렌더링</td><td>DataSnapshot을 폴더/리프 노드 트리로 렌더링. 깊이별 들여쓰기, 짝수 행 배경색 교차.</td></tr>
+  <tr><td class="label debug">LIVE 모드</td><td>ValueChanged 구독으로 실시간 갱신. 외부 Firebase Console 없이 에디터 안에서 DB 상태 확인.</td></tr>
+  <tr><td class="label debug">노드 삭제</td><td>2단계 확인 후 노드 단위 삭제</td></tr>
+  <tr><td class="label debug">권한 거부 대응</td><td>Permission denied 시 "내 데이터로 대신 조회" 버튼 제공</td></tr>
+</table>
+
+<h3 class="subsec debug">7-4. partial class 파일 구성</h3>
+<div class="file-group">
+  <div class="file-group-title fg-debug">Scripts/Network/Editor/Debug/ (SaveManagerDebugWindow.*)</div>
+  <table><tr><th>파일</th><th>역할</th></tr>
+  <tr><td class="label debug">Core.cs</td><td>Tab enum, 생명주기(OnEnable/OnGUI), 코나미 코드, 비밀 탭 시스템, EditorPrefs 관리</td></tr>
+  <tr><td class="label debug">Common.cs</td><td>BuildStyles, DrawStickyDashboard (상단 유저 정보), DrawTabs, DrawStatusBar</td></tr>
+  <tr><td class="label debug">Firebase.cs</td><td>UserData 저장/로드, 골드·토큰·HP 조작 UI</td></tr>
+  <tr><td class="label debug">RunEnd.cs</td><td>싱글/멀티 런종료 테스트, 결과 패널 표시</td></tr>
+  <tr><td class="label debug">Shop.cs</td><td>가챠·구매 UI</td></tr>
+  <tr><td class="label debug">Leaderboard.cs</td><td>리더보드 읽기·쓰기 테스트</td></tr>
+  <tr><td class="label debug">Matchmaking.cs</td><td>매칭 전체 테스트 UI + 라이브 상태 테이블</td></tr>
+  <tr><td class="label debug">FirebaseExplorer.cs</td><td>RTDB 트리 탐색기</td></tr>
+  <tr><td class="label debug">BalanceViewer.cs</td><td>밸런스 시뮬레이션 (비밀 탭)</td></tr>
+  <tr><td class="label debug">SurvivalSim.cs</td><td>생존 시뮬레이터 (비밀 탭)</td></tr>
+  <tr><td class="label debug">GhostStock.cs</td><td>고스트 주식 (비밀 탭)</td></tr>
+  <tr><td class="label debug">GhostSurvival.cs</td><td>고스트 서바이벌 (비밀 탭)</td></tr>
+  </table>
+</div>
+
+<div style="height:48px"></div>
+</div><!-- /content -->
+</div><!-- /page -->
+</body>
+</html>
